@@ -1,0 +1,181 @@
+:root {
+  --bg: #f5f6f8;
+  --card: #ffffff;
+  --text: #222;
+  --muted: #777;
+  --border: #e3e5e8;
+  --primary: #2f80ed;
+  --danger: #e5484d;
+  --success-bg: #e6f6ec;
+  --success-text: #1e7a3c;
+  --error-bg: #fdecec;
+  --error-text: #b42318;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", "Microsoft JhengHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+header {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+}
+
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+h2 { margin: 0 0 12px; font-size: 1.2rem; }
+h3 { margin: 20px 0 8px; font-size: 1rem; color: var(--muted); }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+/* ---------- 訊息 ---------- */
+.flash {
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.flash.success { background: var(--success-bg); color: var(--success-text); }
+.flash.error   { background: var(--error-bg);   color: var(--error-text); }
+
+/* ---------- 表單 ---------- */
+.expense-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.expense-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  color: var(--muted);
+  flex: 1 1 140px;
+}
+
+input {
+  margin-top: 4px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+  color: var(--text);
+}
+input:focus { outline: 2px solid var(--primary); border-color: transparent; }
+
+button {
+  padding: 9px 18px;
+  border: none;
+  border-radius: 6px;
+  background: var(--primary);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+button:hover { opacity: 0.9; }
+
+button.link {
+  background: none;
+  padding: 0;
+  color: var(--primary);
+}
+button.link.danger { color: var(--danger); }
+
+.cancel { color: var(--muted); align-self: center; }
+
+/* ---------- 月份 ---------- */
+.month-picker {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.month-picker h2 { margin: 0; }
+.month-picker input { margin-top: 0; }
+
+/* ---------- 分類統計 ---------- */
+.totals {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.totals li {
+  display: grid;
+  grid-template-columns: 5em 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+.bar {
+  height: 10px;
+  background: var(--bg);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.bar span {
+  display: block;
+  height: 100%;
+  background: var(--primary);
+}
+.grand-total { margin: 10px 0 0; }
+
+/* ---------- 明細表 ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+th { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+.num { text-align: right; white-space: nowrap; }
+
+.tag {
+  background: var(--bg);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.85rem;
+}
+
+.actions {
+  white-space: nowrap;
+  text-align: right;
+}
+.actions a { color: var(--primary); text-decoration: none; margin-right: 10px; }
+.actions form { display: inline; }
+
+.empty { color: var(--muted); }
+
+/* ---------- 手機 ---------- */
+@media (max-width: 560px) {
+  .card { padding: 14px; }
+  th:nth-child(2), td:nth-child(2) { display: none; }
+  .totals li { grid-template-columns: 4em 1fr; }
+  .totals .num { grid-column: 1 / -1; text-align: left; color: var(--muted); }
+}

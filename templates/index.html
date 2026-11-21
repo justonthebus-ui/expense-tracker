@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="card">
+  <h2>新增一筆</h2>
+  <form action="{{ url_for('add') }}" method="post" class="expense-form">
+    <label>日期
+      <input type="date" name="date" value="{{ today }}" required>
+    </label>
+    <label>品項
+      <input type="text" name="item" placeholder="例如：午餐" required>
+    </label>
+    <label>分類
+      <input type="text" name="category" placeholder="其他" list="category-list">
+    </label>
+    <label>金額
+      <input type="number" name="amount" min="1" step="1" placeholder="元" required>
+    </label>
+    <button type="submit">新增</button>
+  </form>
+  <datalist id="category-list">
+    {% for category, _ in totals %}
+      <option value="{{ category }}">
+    {% endfor %}
+    <option value="餐飲"><option value="交通"><option value="購物"><option value="娛樂"><option value="其他">
+  </datalist>
+</section>
+
+<section class="card">
+  <form method="get" class="month-picker">
+    <h2>{{ month }}</h2>
+    <input type="month" name="month" value="{{ month }}" onchange="this.form.submit()">
+  </form>
+
+  {% if totals %}
+    <h3>分類統計</h3>
+    <ul class="totals">
+      {% for category, total in totals %}
+        {% set percent = total / grand_total * 100 %}
+        <li>
+          <span class="cat">{{ category }}</span>
+          <span class="bar"><span style="width: {{ percent }}%"></span></span>
+          <span class="num">{{ total }} 元（{{ '%.1f' % percent }}%）</span>
+        </li>
+      {% endfor %}
+    </ul>
+    <p class="grand-total">總計 <strong>{{ grand_total }}</strong> 元，共 {{ rows|length }} 筆</p>
+
+    <h3>明細</h3>
+    <table>
+      <thead>
+        <tr><th>日期</th><th>分類</th><th>品項</th><th class="num">金額</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for expense_id, day, category, item, amount in rows %}
+          <tr>
+            <td>{{ day }}</td>
+            <td><span class="tag">{{ category }}</span></td>
+            <td>{{ item }}</td>
+            <td class="num">{{ amount }}</td>
+            <td class="actions">
+              <a href="{{ url_for('edit', expense_id=expense_id) }}">修改</a>
+              <form action="{{ url_for('delete', expense_id=expense_id) }}" method="post"
+                    onsubmit="return confirm('確定刪除「{{ day }} {{ item }} {{ amount }} 元」？')">
+                <button type="submit" class="link danger">刪除</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty">這個月沒有紀錄</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}修改第 {{ row[0] }} 筆 - 記帳程式{% endblock %}
+
+{% block content %}
+{# form 有值代表送出後驗證失敗，保留使用者剛剛輸入的內容 #}
+{% set day = form.date if form else row[1] %}
+{% set category = form.category if form else row[2] %}
+{% set item = form.item if form else row[3] %}
+{% set amount = form.amount if form else row[4] %}
+
+<section class="card">
+  <h2>修改第 {{ row[0] }} 筆</h2>
+  <form method="post" class="expense-form">
+    <label>日期
+      <input type="date" name="date" value="{{ day }}" required>
+    </label>
+    <label>品項
+      <input type="text" name="item" value="{{ item }}" required>
+    </label>
+    <label>分類
+      <input type="text" name="category" value="{{ category }}">
+    </label>
+    <label>金額
+      <input type="number" name="amount" min="1" step="1" value="{{ amount }}" required>
+    </label>
+    <button type="submit">儲存</button>
+    <a href="{{ url_for('index', month=row[1][:7]) }}" class="cancel">取消</a>
+  </form>
+</section>
+{% endblock %}
