@@ -32,22 +32,62 @@ def add_expense(date, category, item, amount):
     conn.close()
 
 
-def list_expenses():
-    """取出所有支出，新的排前面"""
+def get_expense(expense_id):
+    """取出單筆支出，找不到回傳 None"""
     conn = sqlite3.connect(DB_PATH)
-    rows = conn.execute(
-        "SELECT id, date, category, item, amount FROM expenses ORDER BY date DESC, id DESC"
-    ).fetchall()
+    row = conn.execute(
+        "SELECT id, date, category, item, amount FROM expenses WHERE id = ?",
+        (expense_id,),
+    ).fetchone()
+    conn.close()
+    return row
+
+
+def list_expenses(month=None):
+    """取出支出，新的排前面；有給 month（例如 "2026-11"）就只取那個月"""
+    conn = sqlite3.connect(DB_PATH)
+    if month:
+        rows = conn.execute(
+            "SELECT id, date, category, item, amount FROM expenses "
+            "WHERE date LIKE ? ORDER BY date DESC, id DESC",
+            (f"{month}-%",),
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT id, date, category, item, amount FROM expenses "
+            "ORDER BY date DESC, id DESC"
+        ).fetchall()
     conn.close()
     return rows
 
 
-def get_total():
-    """計算總支出"""
+def get_category_totals(month=None):
+    """各分類的總金額，花最多的排前面"""
     conn = sqlite3.connect(DB_PATH)
-    total = conn.execute("SELECT COALESCE(SUM(amount), 0) FROM expenses").fetchone()[0]
+    if month:
+        rows = conn.execute(
+            "SELECT category, SUM(amount) AS total FROM expenses "
+            "WHERE date LIKE ? GROUP BY category ORDER BY total DESC",
+            (f"{month}-%",),
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT category, SUM(amount) AS total FROM expenses "
+            "GROUP BY category ORDER BY total DESC"
+        ).fetchall()
     conn.close()
-    return total
+    return rows
+
+
+def update_expense(expense_id, date, category, item, amount):
+    """修改一筆支出"""
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute(
+        "UPDATE expenses SET date = ?, category = ?, item = ?, amount = ? WHERE id = ?",
+        (date, category, item, amount, expense_id),
+    )
+    conn.commit()
+    conn.close()
 
 
 def delete_expense(expense_id):
